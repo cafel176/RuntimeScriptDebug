@@ -12,11 +12,11 @@ QQ群：***792888538***   欢迎反馈遇到的问题和希望支持的功能
 
 <br/>
 
-MZ/MV 视频教程(必看)：
+MZ/MV 视频教程(必看)：https://www.bilibili.com/video/BV186LAz2EWX/
 
 <br/>
 
-MZ/MV Project1：
+MZ/MV Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=2681370
 
 <br/>
 

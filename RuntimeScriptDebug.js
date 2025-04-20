@@ -8,8 +8,8 @@
  * @target MZ
  * @url https://github.com/cafel176/RuntimeScriptDebug
  * @help QQ群：792888538  
- * Project1：
- * 视频教程：
+ * Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=2681370
+ * 视频教程：https://www.bilibili.com/video/BV186LAz2EWX/
  * 
  * ★ 本插件提供如下支持：
  * 
