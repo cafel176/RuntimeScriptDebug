@@ -39,6 +39,8 @@ MZ/MV Project1：
 
 3. 如果想要完全新加js脚本，在调试界面输入***new*** ，即可打开一个全新的编辑界面，可以在此加入全新的内容
 
+![断点](https://github.com/cafel176/RuntimeScriptDebug/blob/main/pic4.png?raw=true '编辑界面-new')
+
 <br/>
 
 > [!IMPORTANT] 
