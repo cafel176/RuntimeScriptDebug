@@ -108,7 +108,7 @@ var scriptDialogShow = function (re) {
     let top = window.screenTop + 100
     let left = window.screenLeft + 100
     // 获取要编辑内容的文本
-    let text = scriptDialogSetText(re)
+    let text = scriptDialogSetText(re === 'new' ? null : re)
     // 创建编辑窗口
     OpenWindow = window.open("", "scriptDialog", "height=500, width=800, top="+top+", left="+left+", resizable=yes, status=no, location=no, toolbar=no, scrollbars=no, menubar=no");
     OpenWindow.document.write("<html>")
@@ -131,7 +131,7 @@ var scriptDialogShow = function (re) {
     } catch (error) {
 
     }
-    OpenWindow.document.write('<font color ="#ffffff">请在此修改js代码</font><br>')
+    OpenWindow.document.write('<font id="origin" color ="#ffffff"></font><br>')
     OpenWindow.document.write('<font color ="#8ad119"><b>确定</b></font><font color ="#ffffff">：将修改应用到游戏</font><br>')
     OpenWindow.document.write('<font color ="#f9636b"><b>重置</b></font><font color ="#ffffff">：将文本框重置为初始内容</font><br>')
     OpenWindow.document.write('<button id="submit" class="my_button" onclick="scriptDialogSubmit(window.mainWindow)"><font color="#000000"><b>确定</b></font></button>')
@@ -141,8 +141,11 @@ var scriptDialogShow = function (re) {
     OpenWindow.document.write('<textarea id="text_area" autofocus></textarea>')
     OpenWindow.document.write("</body>")
     OpenWindow.document.write("</html>")
+    OpenWindow.origin = re
     OpenWindow.text = text
     OpenWindow.mainWindow = window
+    // 初始化输入的文本
+    OpenWindow.document.getElementById("origin").innerHTML = "<b>输入</b>：" + re
     OpenWindow.focus()
     // 初始化编辑窗口的文本
     scriptDialogReset(OpenWindow, text)
@@ -165,13 +168,13 @@ Scene_Base.prototype.update = function () {
             var re = ''
             let check = false
             while (!check) {
-                re = prompt("请输入想调试的变量或函数", "");
+                re = prompt("请输入想调试的变量或函数，输入new以完全新建脚本", "");
                 if (re === '' || re === null)
                     return
 
                 // 完全新建
                 if (re === 'new') {
-                    scriptDialogShow(null)
+                    scriptDialogShow(re)
                     return
                 }
 
