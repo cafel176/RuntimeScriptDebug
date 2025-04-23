@@ -4,6 +4,8 @@ require 'method_source'
 require 'zlib'
 require 'ruby2d'
 
+$test_console = true
+
 # ============================================================================= //
 # 全局变量
 # ============================================================================= //
@@ -210,7 +212,32 @@ module ConsoleCommand
       while true
         puts "请输入指令："
         command = gets
-        self.input_process_internal(command)
+        # 去除首尾空格
+        command = command.strip
+        # 去除末尾换行符
+        command = command.chomp
+        if command == ""
+          next
+        end
+
+        final = ""
+        if command.start_with?($console_token_new + "#")
+          final = command
+        else
+          begin
+            result = eval(command)
+            if result.class.name.include?("Method")
+              final = $console_token_func + "#" + command
+            else
+              final = $console_token_vars + "#" + command
+            end 
+          rescue => err
+            final = $console_token_vars + "#" + command
+          end  
+        end
+
+        self.input_process_internal(final) if final != ""
+
       end
     end
 end
@@ -245,8 +272,9 @@ end
 # ============================================================================= //
 # 测试逻辑
 # ============================================================================= //
+if $test_console
+
 # 函数解析测试
-=begin
 def test_func
 end
 
@@ -259,14 +287,13 @@ class TestClass
 end
 $instance = TestClass.new
 
-ConsoleCommand.input_process_internal("func#Scene_Base.instance_method(:update)")
-ConsoleCommand.input_process_internal("func#\$console.method(:test_func)")
-ConsoleCommand.input_process_internal("func#DataManager.method(:init)")
-ConsoleCommand.input_process_internal("func#TestClass.method(:test_func)")
-ConsoleCommand.input_process_internal("func#\$instance.method(:update)")
-=end
+#ConsoleCommand.input_process_internal("func#Scene_Base.instance_method(:update)")
+#ConsoleCommand.input_process_internal("func#\$console.method(:test_func)")
+#ConsoleCommand.input_process_internal("func#DataManager.method(:init)")
+#ConsoleCommand.input_process_internal("func#TestClass.method(:test_func)")
+#ConsoleCommand.input_process_internal("func#\$instance.method(:update)")
 
-
+end
 # ============================================================================= //
 # 程序运行
 # ============================================================================= //
