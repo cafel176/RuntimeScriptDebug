@@ -159,9 +159,9 @@ var scriptDialogShow = function (re) {
 const cantEditList = ['window']
 
 // 任何时候都可以调试
-var Scene_Base_update = Scene_Base.prototype.update;
+var RuntimeScriptDebug_Scene_Base_update = Scene_Base.prototype.update;
 Scene_Base.prototype.update = function () {
-    Scene_Base_update.call(this);
+    RuntimeScriptDebug_Scene_Base_update.call(this);
 
     if (Input.isTriggered("script")) {
         try {
