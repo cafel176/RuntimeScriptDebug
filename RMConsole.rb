@@ -8,7 +8,7 @@
 # QQ群：792888538  
 # github地址：https://github.com/cafel176/RuntimeScriptDebug
 # Project1：
-# 视频教程：
+# 视频教程：https://www.bilibili.com/video/BV14ELRzXEmb/
 #
 #
 # ★ 控制台配置说明：
@@ -40,8 +40,7 @@
 # 2. 支持运行时变量的查看和修改，在控制台输入变量，得到游戏响应后，可以打开变量编辑面板，修改后可以应用到运行时的游戏内
 #    控制台指令输入格式案例如下：
 #
-#    ★ 注意：当前并不支持以json格式修改object，显示的json格式信息仅供读取，请自行写ruby代码来修改object
-#    ★ 注意：XP版本则由于其序列化字符不符合ut8解析规则因此完全无法查看json格式的object
+#    ★ 注意：当前并不支持整体修改object，显示的信息仅供读取，请自行写ruby代码来修改object
 #    查看：$game_temp
 #    
 #    ★ 注意：以下这种基础类型支持直接修改，但仍要在类里先定义attr_accessor将之暴露出来
@@ -110,8 +109,10 @@ $console_token_var_puts = "var_puts"
 $console_tokens = [$console_token_puts, $console_token_var_puts]
 
 # 接收到的错误
+$mutex_error = Mutex.new
 $console_get_error = ""
 # 接收到的消息
+$mutex_message = Mutex.new
 $console_get_message = ""
 
 # ============================================================================= //
@@ -192,12 +193,39 @@ def temp_script(script)
     end
 end
 
+# puts有时也会崩溃
+alias console_origin_puts puts
+def puts(content)
+    begin
+        console_origin_puts(content)
+    rescue Exception => err
+        console_origin_puts(err.to_s)
+    end
+end
+
 # ============================================================================= //
 # 函数Module
 # ============================================================================= //
 
 # 公共函数类库
 module ConsoleUtils
+    def self.split(text, token)
+        begin
+            #split有时会有问题，重新实现
+            i = text.index(token)
+            if i == nil
+                return [text]
+            else
+                b = i-1
+                a = i+1
+                return [text[0..b], text[a..-1]]
+            end
+        rescue Exception => err
+            puts err.to_s
+        end
+        return [text]
+    end
+
     def self.get_file_full_name(name)
         return cur_path + $console_file_dir + name + ".txt"
     end
@@ -312,19 +340,27 @@ module ConsoleMessage
 
       #输出的变量
       elsif filename.start_with?($console_token_var_puts)
-        begin
-            arr = text.split("=", 2)
+        begin           
+            arr = ConsoleUtils.split(text, "=")
             if arr.length != 2
               # 提交到全局变量供GUI处理
-              $console_get_error = text
+              $mutex_error.synchronize do 
+                $console_get_error = text
+              end
             else
-              var = global_marshal_load(arr[1])
-              json = global_oj_dump(var)
+              # 复杂的object处理，暂时不支持
+              #var = global_marshal_load(arr[1])
+              #value = global_oj_dump(var)
+
               # 提交到全局变量供GUI处理
-              $console_get_message = arr[0] + "=" + json
+              $mutex_message.synchronize do 
+                $console_get_message = text
+              end
             end
         rescue Exception => err
+          $mutex_error.synchronize do 
             $console_get_error = "加载消息出错！" + err.to_s
+          end
         end
 
       #未支持的消息
@@ -365,7 +401,7 @@ module ConsoleCommand
     def self.input_process_internal(command)
       #变量指令
       if command.start_with?($console_token_vars)
-        arr = command.split("#", 2)
+        arr = ConsoleUtils.split(command, "#")
         if arr.length != 2
           return [false, "指令格式错误" + command]
         else
@@ -375,7 +411,7 @@ module ConsoleCommand
         
       #函数指令
       elsif command.start_with?($console_token_funcs)
-        arr = command.split("#", 2)
+        arr = ConsoleUtils.split(command, "#")
         if arr.length != 2
           return [false, "指令格式错误" + command]
         else
@@ -401,7 +437,7 @@ module ConsoleCommand
 
       #新建指令
       elsif command.start_with?($console_token_new)
-        arr = command.split("#", 2)
+        arr = ConsoleUtils.split(command, "#")
         if arr.length != 2
           return [false, "指令格式错误" + command]
         else
@@ -421,7 +457,7 @@ module ConsoleCommand
         
       #变量编辑指令
       elsif command.start_with?($console_token_var_edit)
-        arr = command.split("#", 2)
+        arr = ConsoleUtils.split(command, "#")
         if arr.length != 2
           return [false, "指令格式错误" + command]
         else
@@ -441,7 +477,7 @@ module ConsoleCommand
 
       #函数编辑指令
       elsif command.start_with?($console_token_func_edit)
-        arr = command.split("#", 2)
+        arr = ConsoleUtils.split(command, "#")
         if arr.length != 2
           return [false, "指令格式错误" + command]
         else
@@ -498,7 +534,7 @@ module ConsoleCommand
     #非GUI指令系统，已弃用
     def self.input_process()
       puts "#------------------------------------------------------------------------------------------------"
-      puts "# RPGMaker外接控制台"+$console_version+" 适用于RMVA RMVX RMXP 作者: cafel"
+      puts "# RPGMaker外接控制台"+$console_version+" 适用于RMVA RMVX RMXP 作者: cafel QQ群：792888538"
       puts "#------------------------------------------------------------------------------------------------"
       puts "★ 输入队列已开始执行"
       while true
@@ -534,7 +570,7 @@ class EditWindow
   def prepare(in_var_mode, in_func_mode, in_code, in_hint)
     @var_mode = in_var_mode
     @func_mode = in_func_mode
-    @code = (@var_mode ? "#当前并不支持以json格式修改object，请自行写ruby代码来修改object\n" : "") + in_code
+    @code = (@var_mode ? "#当前并不支持整体修改object，显示的信息仅供读取，请自行写ruby代码来修改object\n" : "") + in_code
     @hint = in_hint
   end
 
@@ -568,16 +604,15 @@ class EditWindow
                 button("确定") {
                     on_clicked do
                         result = @code_area.text.to_s
-                        # UI获得的文本都要转utf-8
-                        result = result.force_encoding("utf-8")
                         # 变量模式
                         if @var_mode
-                            arr = result.split("=", 2)
+                            arr = ConsoleUtils.split(result, "=")
                             if arr.length != 2
                                 msg_box("错误！", "变量编辑格式错误！" + result)
                             else
                                 ConsoleCommand.input_process_internal($console_token_var_edit + "#" + result)
                                 msg_box("完成！", "变量修改完成，请切到游戏触发处理")
+                                # hide是销毁
                                 # 不hide直接继续编辑会导致游戏崩溃
                                 edit_window.hide
                                 $can_edit = true
@@ -587,6 +622,7 @@ class EditWindow
                         elsif @func_mode
                             ConsoleCommand.input_process_internal($console_token_func_edit + "#" + result)
                             msg_box("完成！", "函数修改完成，请切到游戏触发处理")
+                            # hide是销毁
                             # 不hide直接继续编辑会导致游戏崩溃
                             edit_window.hide
                             $can_edit = true
@@ -595,6 +631,7 @@ class EditWindow
                         else
                             ConsoleCommand.input_process_internal($console_token_new + "#" + result)
                             msg_box("完成！", "脚本执行完成，请切到游戏触发处理")
+                            # hide是销毁
                             # 不hide直接继续编辑会导致游戏崩溃
                             edit_window.hide
                             $can_edit = true
@@ -643,7 +680,7 @@ class InputWindow
   end
 
   def launch
-    window("RPGMaker外接控制台"+$console_version+" 适用于RMVA RMVX RMXP 作者: cafel", 600, 100) {
+    window("RPGMaker外接控制台"+$console_version+" 适用于RMVA RMVX RMXP 作者: cafel QQ群：792888538", 600, 100) {
         margined true
 
         vertical_box {
@@ -666,8 +703,6 @@ class InputWindow
                     on_clicked do  
                         if $can_edit
                             entry_text = @entry.text.to_s
-                            # UI获得的文本都要转utf-8
-                            entry_text = entry_text.force_encoding("utf-8")
                             # 检查指令
                             result = ConsoleCommand.input_check(entry_text)
                             # 正常处理
@@ -683,38 +718,45 @@ class InputWindow
                                 $console_max_wait_times.times do |i|
                                   sleep(0.1)
 
+                                  error = ""
                                   # 游戏反馈了错误
-                                  if $console_get_error != ""
-                                    text = $console_get_error
-                                    $console_get_error = ""
-
-                                    msg_box("游戏反馈的错误！", text) 
-                                    
+                                  $mutex_error.synchronize do
+                                      if $console_get_error != ""
+                                        error = $console_get_error
+                                        $console_get_error = ""
+                                      end
+                                  end
+                                  if error != ""
+                                    msg_box("游戏反馈的错误！", error)                                   
                                     check = true
                                     break
+                                  end
 
+                                  message = ""
                                   # 游戏反馈了消息
-                                  elsif $console_get_message != ""
-                                    text = $console_get_message
-                                    $console_get_message = ""
-
-                                    arr = text.split("=", 2)
+                                  $mutex_message.synchronize do 
+                                      if $console_get_message != ""
+                                        message = $console_get_message
+                                        $console_get_message = ""
+                                      end
+                                  end
+                                  if message != ""
+                                    arr = ConsoleUtils.split(message, "=")
                                     if arr.length != 2
-                                        msg_box("游戏反馈的错误！", "消息无法解析" + text)                                        
+                                        msg_box("游戏反馈的错误！", "消息无法解析" + message)                                        
                                     else
                                         var_mode = true
                                         func_mode = false
-                                        code = text
+                                        code = message
                                         hint = entry_text
 
                                         editWindow = EditWindow.new
                                         editWindow.prepare(var_mode, func_mode, code, hint)
                                         editWindow.launch
                                     end
-
+                                  
                                     check = true
                                     break
-
                                   end
                                 end
 
@@ -732,6 +774,7 @@ class InputWindow
                                 editWindow = EditWindow.new
                                 editWindow.prepare(var_mode, func_mode, code, hint)
                                 editWindow.launch
+
                               end
                             else
                                 msg_box("指令错误！", result[1])

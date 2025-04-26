@@ -8,7 +8,7 @@
 # QQ群：792888538  
 # github地址：https://github.com/cafel176/RuntimeScriptDebug
 # Project1：
-# 视频教程：
+# 视频教程：https://www.bilibili.com/video/BV14ELRzXEmb/
 #
 #
 # ★ 控制台配置说明：
@@ -40,8 +40,7 @@
 # 2. 支持运行时变量的查看和修改，在控制台输入变量，得到游戏响应后，可以打开变量编辑面板，修改后可以应用到运行时的游戏内
 #    控制台指令输入格式案例如下：
 #
-#    ★ 注意：当前并不支持以json格式修改object，显示的json格式信息仅供读取，请自行写ruby代码来修改object
-#    ★ 注意：XP版本则由于其序列化字符不符合ut8解析规则因此完全无法查看json格式的object
+#    ★ 注意：当前并不支持整体修改object，显示的信息仅供读取，请自行写ruby代码来修改object
 #    查看：$game_temp
 #    
 #    ★ 注意：以下这种基础类型支持直接修改，但仍要在类里先定义attr_accessor将之暴露出来
@@ -127,6 +126,15 @@ def global_eval(command)
     return nil
 end
 
+alias console_origin_puts puts
+def puts(content)
+    begin
+        console_origin_puts(content)
+    rescue Exception => err
+        console_origin_puts(err.to_s)
+    end
+end
+
 end
 # ============================================================================= //
 # 函数Module
@@ -134,6 +142,23 @@ end
 
 # 公共函数类库
 module DebugUtils
+    def self.split(text, token)
+        begin
+            #split有时会有问题，重新实现
+            i = text.index(token)
+            if i == nil
+                return [text]
+            else
+                b = i-1
+                a = i+1
+                return [text[0..b], text[a..-1]]
+            end
+        rescue Exception => err
+            puts err.to_s
+        end
+        return [text]
+    end
+
     def self.get_file_full_name(name)
         return cur_path + $debug_file_dir + name + ".txt"
     end
@@ -196,7 +221,7 @@ module DebugCommand
       if filename.include?($debug_token_vars)
         begin
           var = global_eval(text)    
-          DebugUtils.write_file($debug_token_var_puts, text + "=" + global_marshal_dump(var))
+          DebugUtils.write_file($debug_token_var_puts, text + "=" + var.inspect)
         rescue Exception => err
           puts text + " : " + err.to_s
           DebugUtils.write_file($debug_token_var_puts, text + " : " + err.to_s)
@@ -204,7 +229,7 @@ module DebugCommand
 
       #变量编辑指令
       elsif filename.include?($debug_token_var_edit)
-        arr = text.split("=", 2)
+        arr = DebugUtils.split(text, "=")
         if arr.length != 2
             puts "变量编辑格式错误！" + text
             return
@@ -279,7 +304,7 @@ if $debug_active && !defined? $console
   DebugMessage.Log("★ 已启动游戏进程")
 
   puts "#------------------------------------------------------------------------------------------------"
-  puts "# RPGMaker控制台内接插件"+$debug_version+" 适用于RMVA RMVX RMXP 作者: cafel"
+  puts "# RPGMaker控制台内接插件"+$debug_version+" 适用于RMVA RMVX RMXP 作者: cafel QQ群：792888538"
   puts "#------------------------------------------------------------------------------------------------"
   puts "★ 插件已开始运行"
 
@@ -312,7 +337,6 @@ if defined?(Scene_Base)
         DebugCommand.input_process
       end
     end
-
 else
     # XP
     class Window_Base
@@ -328,4 +352,3 @@ else
       end
     end
 end
-

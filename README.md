@@ -12,7 +12,7 @@ QQ群：***792888538***   欢迎反馈遇到的问题和希望支持的功能
 
 <br/>
 
-VA/VX/XP 视频教程(必看)：
+VA/VX/XP 视频教程(必看)：https://www.bilibili.com/video/BV14ELRzXEmb/
 
 <br/>
 
@@ -59,8 +59,7 @@ MZ/MV Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=26
    
    <br/>
    
-    ★ 注意：当前并不支持以json格式修改object，显示的json格式信息仅供读取，请自行写ruby代码来修改object<br/>
-    ★ 注意：XP版本则由于其序列化字符不符合ut8解析规则因此完全无法查看json格式的object<br/>
+    ★ 注意：当前并不支持整体修改object，显示的信息仅供读取，请自行写ruby代码来修改object
     查看：$game_temp
     
     <br/>
