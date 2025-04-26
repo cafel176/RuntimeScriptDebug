@@ -7,7 +7,7 @@
 # 作者： cafel
 # QQ群：792888538  
 # github地址：https://github.com/cafel176/RuntimeScriptDebug
-# Project1：
+# Project1：https://rpg.blue/thread-497298-1-1.html
 # 视频教程：https://www.bilibili.com/video/BV14ELRzXEmb/
 #
 #
@@ -62,7 +62,7 @@
 # 控制插件是否生效
 $debug_active = true
 # 测试用，会定义一些测试用的类型
-$debug_test = true
+$debug_test = false
 
 #版本
 $debug_version = "v1"

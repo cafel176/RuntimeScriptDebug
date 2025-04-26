@@ -16,7 +16,7 @@ VA/VX/XP 视频教程(必看)：https://www.bilibili.com/video/BV14ELRzXEmb/
 
 <br/>
 
-VA/VX/XP Project1：
+VA/VX/XP Project1：https://rpg.blue/thread-497298-1-1.html
 
 <br/>
 
@@ -59,7 +59,7 @@ MZ/MV Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=26
    
    <br/>
    
-    ★ 注意：当前并不支持整体修改object，显示的信息仅供读取，请自行写ruby代码来修改object
+    ★ 注意：当前并不支持整体修改object，显示的信息仅供读取，请自行写ruby代码来修改object    <br/>
     查看：$game_temp
     
     <br/>
