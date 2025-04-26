@@ -37,15 +37,15 @@ MZ/MV Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=26
 
 <br/>
 
-1. 支持运行时函数源码查看和修改，在控制台输入函数，可以打开函数源码编辑面板，修改后可以应用到运行时的游戏内
+1. 支持运行时函数源码查看和修改，在控制台输入函数，可以打开函数源码编辑面板，修改后可以应用到运行时的游戏内<br/>
     控制台指令输入格式案例如下：
     
 	<br/>
 
-    通过Class类名获取类函数：   TestClass.method(:test_func)
-    通过Class类名获取成员函数：Scene_Base.instance_method(:update)
-    通过Class实例获取成员函数：$instance.method(:update)
-    通过Module名获取类函数：   DataManager.method(:init)
+    通过Class类名获取类函数：   TestClass.method(:test_func)<br/>
+    通过Class类名获取成员函数：Scene_Base.instance_method(:update)<br/>
+    通过Class实例获取成员函数：$instance.method(:update)<br/>
+    通过Module名获取类函数：   DataManager.method(:init)<br/>
     获取全局函数：             		 $console.method(:test_func)
 
 <br/>
@@ -54,21 +54,21 @@ MZ/MV Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=26
 
 <br/>
 
-2. 支持运行时变量的查看和修改，在控制台输入变量，得到游戏响应后，可以打开变量编辑面板，修改后可以应用到运行时的游戏内
+2. 支持运行时变量的查看和修改，在控制台输入变量，得到游戏响应后，可以打开变量编辑面板，修改后可以应用到运行时的游戏内<br/>
     控制台指令输入格式案例如下：
    
    <br/>
    
-    ★ 注意：当前并不支持以json格式修改object，显示的json格式信息仅供读取，请自行写ruby代码来修改object
-    ★ 注意：XP版本则由于其序列化字符不符合ut8解析规则因此完全无法查看json格式的object
+    ★ 注意：当前并不支持以json格式修改object，显示的json格式信息仅供读取，请自行写ruby代码来修改object<br/>
+    ★ 注意：XP版本则由于其序列化字符不符合ut8解析规则因此完全无法查看json格式的object<br/>
     查看：$game_temp
     
     <br/>
     
-    ★ 注意：以下这种基础类型支持直接修改，但仍要在类里先定义 attr_accessor 将之暴露出来
-    查看：$game_party.gold
-    修改：$game_party.gold = 100
-    查看：DataManager.last_savefile_index
+    ★ 注意：以下这种基础类型支持直接修改，但仍要在类里先定义 attr_accessor 将之暴露出来<br/>
+    查看：$game_party.gold<br/>
+    修改：$game_party.gold = 100<br/>
+    查看：DataManager.last_savefile_index<br/>
     修改：DataManager.last_savefile_index = 1
 
 <br/>
@@ -83,20 +83,20 @@ MZ/MV Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=26
 
 <br/>
 
- ★ 控制台配置说明：
- 1. 请将插件 RMConsolePlugin.rb 中的内容全部复制添加到RM编辑器的插件管理器中并保存工程
- 2. 请将 RMConsole.exe 控制台程序放到RM工程目录下，与游戏启动exe并列
+ ★ 控制台配置说明：<br/>
+ 1. 请将插件 RMConsolePlugin.rb 中的内容全部复制添加到RM编辑器的插件管理器中并保存工程<br/>
+ 2. 请将 RMConsole.exe 控制台程序放到RM工程目录下，与游戏启动exe并列<br/>
  3. 有时命令行窗口没刷新不显示UI或不显示新消息，可以选中它按回车来让他刷新
 
 <br/>
 
 > [!IMPORTANT] 
->  注意：插件需和RGSS外接控制台配合使用！
-> 注意：控制台不支持多开，不要同时打开多个，每个控制台只能控制他所在工程的游戏进程！
-> 注意：控制台生命周期应与游戏相同，两者启动先后顺序无所谓。但当重启游戏时，控制台也要重启！
-> 注意：RGSS内部无法开多线程，因此外接控制台输入指令后，需要切到游戏窗口才会对指令做出响应
-          之后再次切回控制台，即可根据游戏的响应打开对应编辑窗口再应用回游戏
-> 注意：控制台内的修改完全是运行时的，不会影响RM工程，因此调试时的修改如要保留，请自行添加到插件管理器中
+>  注意：插件需和RGSS外接控制台配合使用！<br/>
+> 注意：控制台不支持多开，不要同时打开多个，每个控制台只能控制他所在工程的游戏进程！<br/>
+> 注意：控制台生命周期应与游戏相同，两者启动先后顺序无所谓。但当重启游戏时，控制台也要重启！<br/>
+> 注意：RGSS内部无法开多线程，因此外接控制台输入指令后，需要切到游戏窗口才会对指令做出响应<br/>
+          之后再次切回控制台，即可根据游戏的响应打开对应编辑窗口再应用回游戏<br/>
+> 注意：控制台内的修改完全是运行时的，不会影响RM工程，因此调试时的修改如要保留，请自行添加到插件管理器中<br/>
 > 注意：XP版本没有Scene_Base，因此写在Window_Base，即需要至少有一个窗口创建过才可以正常响应！
 
 <br/>
@@ -124,4 +124,3 @@ MZ/MV Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=26
 ![编辑界面-new](https://github.com/cafel176/RuntimeScriptDebug/blob/main/pic4.png?raw=true '编辑界面-new')
 
 <br/>
-
