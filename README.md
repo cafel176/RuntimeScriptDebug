@@ -29,7 +29,10 @@ MZ/MV Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=26
 <br/>
 
 > [!IMPORTANT] 
-> 注意：本工具完全用于开发调试，开发完成后进入部署阶段时，请将插件关闭避免影响到游戏流程
+> 注意：本工具完全用于开发调试，开发完成后进入部署阶段时，请将插件关闭避免影响到游戏流程<br/>
+> 注意：由于作者手上没有win11的电脑，因此github上的exe仅支持win10<br/>
+>      如有win11用户愿意合作，可以安装ruby3.4.3-1，之后用gem安装源码内的几个库，自行打包源码到exe<br/>
+>      ruby下载地址：https://rubyinstaller.org/downloads/
 
 ## VA/VX/XP外接控制台：
 
@@ -84,6 +87,8 @@ MZ/MV Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=26
 
  ★ 控制台配置说明：<br/>
  1. 请将插件 RMConsolePlugin.rb 中的内容全部复制添加到RM编辑器的插件管理器中并保存工程<br/>
+    ★ 注意：这个rb文件编码采用utf-8，因此用某些文本编辑工具打开后复制到RM可能会有编码错误导致无法识别<br/>
+    如遇到了，可以尝试从github网页端直接打开这个文件复制<br/>
  2. 请将 RMConsole.exe 控制台程序放到RM工程目录下，与游戏启动exe并列<br/>
  3. 有时命令行窗口没刷新不显示UI或不显示新消息，可以选中它按回车来让他刷新
 
