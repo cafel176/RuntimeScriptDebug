@@ -86,7 +86,8 @@ MZ/MV Project1：https://rpg.blue/forum.php?mod=viewthread&tid=497271&fromuid=26
  1. 请将插件 RMConsolePlugin.rb 中的内容全部复制添加到RM编辑器的插件管理器中并保存工程<br/>
  2. 请将 RMConsole.exe 控制台程序放到RM工程目录下，与游戏启动exe并列<br/>
  3. 有时命令行窗口没刷新不显示UI或不显示新消息，可以选中它按回车来让他刷新
-
+ 4. RM插件读取文件路径时无法识别中文和一些特殊符号，可能因此而报错；如果可能的话，请保持工程目录为全英文。
+ 
 <br/>
 
 > [!IMPORTANT] 
